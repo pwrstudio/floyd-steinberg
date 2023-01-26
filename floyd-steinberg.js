@@ -36,15 +36,17 @@ function floyd_steinberg(image) {
   }
 
   for (var currentPixel = 0; currentPixel <= imageDataLength; currentPixel += 4) {
-    // threshold for determining current pixel's conversion to a black or white pixel
-    newPixel = imageData[currentPixel] < 150 ? 0 : 255;
-    err = Math.floor((imageData[currentPixel] - newPixel) / 23);
-    imageData[currentPixel + 0 * 1 - 0 ] = newPixel;
-    imageData[currentPixel + 4 * 1 - 0 ] += err * 7;
-    imageData[currentPixel + 4 * w - 4 ] += err * 3;
-    imageData[currentPixel + 4 * w - 0 ] += err * 5;
-    imageData[currentPixel + 4 * w + 4 ] += err * 1;
-    // Set g and b values equal to r (effectively greyscales the image fully)
+    // Bill Atkinson's dithering algorithm
+    newPixel = imageData[currentPixel] < 129 ? 0 : 255;
+    err = Math.floor((imageData[currentPixel] - newPixel) / 8);
+    imageData[currentPixel] = newPixel;
+    imageData[currentPixel       + 4 ] += err;
+    imageData[currentPixel       + 8 ] += err;
+    imageData[currentPixel + 4*w - 4 ] += err;
+    imageData[currentPixel + 4*w     ] += err;
+    imageData[currentPixel + 4*w + 4 ] += err;
+    imageData[currentPixel + 8*w     ] += err;
+        // Set g and b values equal to r (effectively greyscales the image fully)
     imageData[currentPixel + 1] = imageData[currentPixel + 2] = imageData[currentPixel];
   }
 
